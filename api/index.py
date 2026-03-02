@@ -13,7 +13,7 @@ class handler(BaseHTTPRequestHandler):
 			url_params = parse_qs(url_path.query)
 			cert_code = url_params.get('input', [''])[0]
 		
-			if not input_string:
+			if not cert_code:
 				self.send_response(400)
 				self.send_header('Content-type', 'text/plain')
 				self.end_headers()
