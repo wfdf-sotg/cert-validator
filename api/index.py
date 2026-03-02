@@ -9,7 +9,9 @@ class handler(BaseHTTPRequestHandler):
 	def do_GET(self):
 		try: 
 			# Parse input parameter /?code=7728373450WM
-			cert_code = parse_qs(urlparse(self.path)).get('code', [''])[0]
+			url_path = urlparse(self.path)
+			url_params = parse_qs(url_path.query)
+			cert_code = url_params.get('input', [''])[0]
 		
 			if not input_string:
 				self.send_response(400)
