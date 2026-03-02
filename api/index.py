@@ -26,7 +26,7 @@ class handler(BaseHTTPRequestHandler):
 			new_url = f"academy.wfdf.sport/webservice/rest/server.php?wstoken={ws_token}&wsfunction=local_validatecert_validate_certificate&moodlewsrestformat=json&code={cert_code}"
 			
 			# Call the new API
-			response = requests.get(target_url,headers={"Authorization": f"Bearer {ws_token}"},timeout=10)
+			response = requests.get(new_url,headers={"Authorization": f"Bearer {ws_token}"},timeout=10)
 			
 			# 4. Return the response
 			self.send_response(response.status_code)
