@@ -77,8 +77,6 @@ class handler(BaseHTTPRequestHandler):
 					return
 			
 			# Else return the full response
-			#self.send_header('Content-type', response.headers.get('Content-Type', 'application/json'))
-			#self.end_headers()
 			self.wfile.write(response.content)
 			return
 			
