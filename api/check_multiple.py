@@ -52,9 +52,9 @@ class handler(BaseHTTPRequestHandler):
 				res_obj = json.loads(response.content.decode('UTF-8'))
 				if not res_obj['valid']: # cert code is invalid
 					ans['invalid'].append(cert_code)
-				else if res_obj['expires'] == "NEVER": # cert expires never
+				elif res_obj['expires'] == "NEVER": # cert expires never
 					ans['valid'].append(cert_code)
-				else if cert_expiry <= res_obj['expires']: # query expiry date is before or on the cert expiry
+				elif cert_expiry <= res_obj['expires']: # query expiry date is before or on the cert expiry
 					ans['valid'].append(cert_code)
 				else: # cert expires before query date
 					ans['invalid'].append(cert_code)
