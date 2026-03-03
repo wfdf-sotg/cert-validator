@@ -26,7 +26,7 @@ class handler(BaseHTTPRequestHandler):
 				self.send_response(400)
 				self.send_header('Content-type', 'text/plain')
 				self.end_headers()
-				self.wfile.write(f'Missing "code" or "expiry" query parameter in path: {url_path} and params: {url_params}'.encode('utf-8'))
+				self.wfile.write(f'Missing "codes" or "expiry" query parameter in path: {url_path} and params: {url_params}'.encode('utf-8'))
 				return
 
 			# Create answer object
@@ -48,17 +48,15 @@ class handler(BaseHTTPRequestHandler):
 					self.wfile.write(f"Error: {str(e)}".encode('utf-8'))
 					return
 				
-				# Parse the expiry date
+				# Parse the certificate validity and expiry date and append
 				res_obj = json.loads(response.content.decode('UTF-8'))
-				res_valid = res_obj['valid']
-				res_expiry = "9999-12-31"	# mapping over NEVER
-				if res_obj['expires'] != "NEVER":
-					res_expiry = res_obj['expires']
-
-				# Compare the date and validity and add to the correct array
-				if res_valid and cert_expiry <= res_expiry:
+				if not res_obj['valid']: # cert code is invalid
+					ans['invalid'].append(cert_code)
+				else if res_obj['expires'] == "NEVER": # cert expires never
 					ans['valid'].append(cert_code)
-				else:
+				else if cert_expiry <= res_obj['expires']: # query expiry date is before or on the cert expiry
+					ans['valid'].append(cert_code)
+				else: # cert expires before query date
 					ans['invalid'].append(cert_code)
 
 			# Return the full response object
