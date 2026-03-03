@@ -37,7 +37,7 @@ class handler(BaseHTTPRequestHandler):
 			new_url = f"https://academy.wfdf.sport/webservice/rest/server.php?wstoken={ws_token}&wsfunction=local_validatecert_validate_certificate&moodlewsrestformat=json&code={cert_code}"
 			
 			# Call the wrapped API
-			response = requests.get(new_url,headers={"Authorization": f"Bearer {ws_token}"},timeout=10)
+			response = requests.get(new_url,timeout=10)
 			
 			# Return error, if we don't receive 200–299 status code
 			if 200 > response.status_code or 299 < response.status_code: 
