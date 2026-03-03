@@ -58,7 +58,7 @@ class handler(BaseHTTPRequestHandler):
 				self.send_header('Content-type', 'text/plain')
 				self.end_headers()
 				if cert_expiry and cert_email:
-					self.wfile.write((cert_expiry <= res_obj['expiry'] and cert_email == res_obj['email']).encode('utf-8')
+					self.wfile.write((cert_expiry <= res_obj['expiry'] and cert_email == res_obj['email']).encode('utf-8'))
 					return
 				if cert_expiry:
 					self.wfile.write((cert_expiry <= res_obj['expiry']).encode('utf-8'))
