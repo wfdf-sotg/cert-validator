@@ -55,7 +55,7 @@ class handler(BaseHTTPRequestHandler):
 			self.end_headers()
 			
 			# if the certificate code is false
-			if res_object['valid'] == False:
+			if res_obj['valid'] == False:
 				self.wfile.write(str(False).encode('utf-8'))
 				return
 
