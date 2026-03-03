@@ -40,7 +40,7 @@ class handler(BaseHTTPRequestHandler):
 			response = requests.get(new_url,headers={"Authorization": f"Bearer {ws_token}"},timeout=10)
 			
 			# Return error, if we don't receive 200–299 status code
-			if 200 > response.code or 299 < response.code: 
+			if 200 > response.status_code or 299 < response.status_code: 
 				self.send_response(response.status_code)
 				self.send_header('Content-type', 'text/plain')
 				self.end_headers()
