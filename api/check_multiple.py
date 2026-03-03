@@ -22,7 +22,7 @@ class handler(BaseHTTPRequestHandler):
 			cert_expiry = url_params.get('expiry', [''])[0]
 		
 			# Check that cert_code is provided
-			if cert_codes.len() == 0 or not cert_expiry:
+			if len(cert_codes) == 0 or not cert_expiry:
 				self.send_response(400)
 				self.send_header('Content-type', 'text/plain')
 				self.end_headers()
