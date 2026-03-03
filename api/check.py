@@ -34,7 +34,6 @@ class handler(BaseHTTPRequestHandler):
 			
 			# Create new request URL with code and ws_token
 			ws_token = os.environ.get('ws_token', '')
-			#ws_token = "06c3dccfbd90b558fe1e780ded1454ac"
 			new_url = f"https://academy.wfdf.sport/webservice/rest/server.php?wstoken={ws_token}&wsfunction=local_validatecert_validate_certificate&moodlewsrestformat=json&code={cert_code}"
 			
 			# Call the wrapped API
