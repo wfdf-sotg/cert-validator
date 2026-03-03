@@ -3,6 +3,7 @@ from urllib.parse import urlparse, parse_qs
 import urllib.request
 import requests
 import os
+import json
 
 # Function to check if a given certificate code is valid
 # Parameters:
@@ -47,22 +48,34 @@ class handler(BaseHTTPRequestHandler):
 				self.wfile.write(f"Error: {str(e)}".encode('utf-8'))
 				return
 			
-			# If cert_expiry or cert_email is set, return TRUE or FALSE
-			if cert_expiry or cert_email:
-				self.send_response(response.status_code)
-				self.send_header('Content-type', 'text/plain')
-				self.end_headers()
-				self.wfile.write(cert_expiry <= response.content.get('expiry') and cert_email == response.content.get('email'))
-				return
-			
+			res_obj = json.loads(response.content.decode('UTF-8'))
+
 			# Return the response
 			self.send_response(response.status_code)
+
+			# If cert_expiry or cert_email is set, return TRUE or FALSE			
+			if cert_expiry or cert_email:
+				self.send_header('Content-type', 'text/plain')
+				self.end_headers()
+				if cert_expiry and cert_email:
+					self.wfile.write(cert_expiry <= res_obj['expiry'] and cert_email == res_obj['email'])
+					return
+				if cert_expiry:
+					self.wfile.write(cert_expiry <= res_obj['expiry'])
+					return
+				else: 
+					self.wfile.write(cert_email == res_obj['email'])
+					return
+			
+			# Else return the full response
 			self.send_header('Content-type', response.headers.get('Content-Type', 'application/json'))
 			self.end_headers()
 			self.wfile.write(response.content)
+			return
 			
 		except Exception as e:
 			self.send_response(500)
 			self.send_header('Content-type', 'text/plain')
 			self.end_headers()
 			self.wfile.write(f"Error: {str(e)}".encode('utf-8'))
+			return
