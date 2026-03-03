@@ -61,9 +61,10 @@ class handler(BaseHTTPRequestHandler):
 
 			# Return the full response object
 			self.send_response(200)
-			self.send_header('Content-type', 'text/plain')
+			self.send_header('Content-type', response.headers.get('Content-Type', 'application/json'))
 			self.end_headers()
-			self.wfile.write(f'Done'.encode('utf-8'))
+			self.wfile.write(jason.dumps(ans))
+			#self.wfile.write(f'Done'.encode('utf-8'))
 			return
 			
 		except Exception as e:
