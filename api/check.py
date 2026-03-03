@@ -49,6 +49,10 @@ class handler(BaseHTTPRequestHandler):
 				return
 			
 			res_obj = json.loads(response.content.decode('UTF-8'))
+			res_email = res_obj['email']
+			res_expiry = "9999-12-31"	# mapping over NEVER
+			if res_obj['expires'] != "NEVER":
+				res_expiry = res_obj['expires']
 
 			# Return the response
 			self.send_response(response.status_code)
@@ -58,13 +62,14 @@ class handler(BaseHTTPRequestHandler):
 				self.send_header('Content-type', 'text/plain')
 				self.end_headers()
 				if cert_expiry and cert_email:
-					self.wfile.write(str(cert_expiry <= res_obj['expiry'] and cert_email == res_obj['email']).encode('utf-8'))
+					self.wfile.write(str(cert_expiry <= res_expiry and cert_email == res_email).encode('utf-8'))
 					return
 				if cert_expiry:
-					self.wfile.write(str(cert_expiry <= res_obj['expiry']).encode('utf-8'))
+					
+					self.wfile.write(str(cert_expiry <= res_expiry).encode('utf-8'))
 					return
 				else: 
-					self.wfile.write(str(cert_email == res_obj['email']).encode('utf-8'))
+					self.wfile.write(str(cert_email == res_email).encode('utf-8'))
 					return
 			
 			# Else return the full response
