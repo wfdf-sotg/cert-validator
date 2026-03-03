@@ -29,7 +29,7 @@ class handler(BaseHTTPRequestHandler):
 				self.send_response(400)
 				self.send_header('Content-type', 'text/plain')
 				self.end_headers()
-				self.wfile.write(f'Missing "code" query parameter in path: {url_path} and params: {url_params}')
+				self.wfile.write(f'Missing "code" query parameter in path: {url_path} and params: {url_params}'.encode('utf-8'))
 				return
 			
 			# Create new request URL with code and ws_token
