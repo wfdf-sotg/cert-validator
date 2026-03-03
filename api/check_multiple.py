@@ -26,7 +26,7 @@ class handler(BaseHTTPRequestHandler):
 				self.send_response(400)
 				self.send_header('Content-type', 'text/plain')
 				self.end_headers()
-				self.wfile.write(f'Missing "code" or "expiry" query parameter in path: {url_path} and params: {url_params}')
+				self.wfile.write(f'Missing "code" or "expiry" query parameter in path: {url_path} and params: {url_params}'.encode('utf-8'))
 				return
 
 			# Create answer object
