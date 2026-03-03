@@ -51,11 +51,16 @@ class handler(BaseHTTPRequestHandler):
 
 			# Return the response
 			self.send_response(response.status_code)
+			self.send_header('Content-type', 'text/plain')
+			self.end_headers()
+			
+			# if the certificate code is false
+			if res_object['valid'] == False:
+				self.wfile.write(str(False).encode('utf-8'))
+				return
 
 			# If cert_expiry or cert_email is set, return TRUE or FALSE			
 			if cert_expiry or cert_email:
-				self.send_header('Content-type', 'text/plain')
-				self.end_headers()
 				res_email = res_obj['email']
 				res_expiry = "9999-12-31"	# mapping over NEVER
 				if res_obj['expires'] != "NEVER":
@@ -72,8 +77,8 @@ class handler(BaseHTTPRequestHandler):
 					return
 			
 			# Else return the full response
-			self.send_header('Content-type', response.headers.get('Content-Type', 'application/json'))
-			self.end_headers()
+			#self.send_header('Content-type', response.headers.get('Content-Type', 'application/json'))
+			#self.end_headers()
 			self.wfile.write(response.content)
 			return
 			
