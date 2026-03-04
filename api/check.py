@@ -12,6 +12,7 @@ import json
 # 	OPTIONAL
 #		?expiry -> if provided, returns TRUE or FALSE, if the certificate is valid on a given date
 # 		?email -> if provided, returns TRUE or FALSE, if the certificate belongs to the given email
+#		?username -> if provided, returns TRUE or FALSE, if the certificate belongs to the given username
 
 class handler(BaseHTTPRequestHandler):
 
@@ -23,6 +24,7 @@ class handler(BaseHTTPRequestHandler):
 			cert_code = url_params.get('code', [''])[0]
 			cert_expiry = url_params.get('expiry', [''])[0]
 			cert_email = url_params.get('email', [''])[0]
+			cert_user = url_params.get('username', [''])[0]
 		
 			# Check that cert_code is provided
 			if not cert_code:
@@ -59,25 +61,23 @@ class handler(BaseHTTPRequestHandler):
 				self.wfile.write(str(False).encode('utf-8'))
 				return
 
-			# If cert_expiry or cert_email is set, return TRUE or FALSE			
-			if cert_expiry or cert_email:
-				res_email = res_obj['email']
-				res_expiry = "9999-12-31"	# mapping over NEVER
+			# If no additional parameters are given, return the full response
+			if not cert_expiry and not cert_email and not cert_user:
+				self.wfile.write(response.content)
+				return
+
+			# Some parameters were given, so let's check them and return TRUE or FALSE
+			res = True
+
+			if cert_expiry: # check expiry date
 				if res_obj['expires'] != "NEVER":
-					res_expiry = res_obj['expires']
-				if cert_expiry and cert_email:
-					self.wfile.write(str(cert_expiry <= res_expiry and cert_email == res_email).encode('utf-8'))
-					return
-				if cert_expiry:
-					
-					self.wfile.write(str(cert_expiry <= res_expiry).encode('utf-8'))
-					return
-				else: 
-					self.wfile.write(str(cert_email == res_email).encode('utf-8'))
-					return
+					res = cert_expiry <= res_expiry
+			if res and cert_email: # check the email is correct
+				res = cert_email == res_obj['email']
+			if res and cert_user: # check the username
+				res = cert_user == res_obj['username']
 			
-			# Else return the full response
-			self.wfile.write(response.content)
+			self.wfile.write(str(res).encode('utf-8'))
 			return
 			
 		except Exception as e:
